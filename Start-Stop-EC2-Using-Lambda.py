@@ -1,3 +1,19 @@
+"""
+Description : This Code avoids the interactive way of entering the creds and uses the LAMBDA Execution Role
+This code will be used in Lambda Function and will start/stop EC2 based on Movies.csv file present in ruchi0312 bucket
+
+Movies.csv contents are:
+Action  Scope
+------  -----
+Machine on
+
+EC2 will be turned on is scope=on and vice-versa
+
+There are several dependencies to invoke a S3 trigger to Lambda.
+The details are explained in the Serverless Section of SAA-C02 Exam
+
+"""
+
 import boto3
 import pandas
 
@@ -18,7 +34,7 @@ obj = client.get_object(
 data = pandas.read_csv(obj['Body'])
 
 region = 'ap-south-1'
-instances = ['i-04be3bf040b503db7']
+instances = [''] #enter the Instance ID
 ec2 = boto3.client('ec2', region_name=region)
 
 def lambda_handler(event, context):
@@ -27,4 +43,4 @@ def lambda_handler(event, context):
         print('Started(ON) Instance: ' + str(instances))
     elif (data.iloc[0,1] == 'off'):
         ec2.stop_instances(InstanceIds=instances)
-        print('Stopped Instance: ' + str(instances))
+        print('Stopped(Off) Instance: ' + str(instances))
