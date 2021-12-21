@@ -12,4 +12,4 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World!\n"
+    return "<html><body><h1>AZ 104 Exam Preparation!</h1></body></html>\n"
