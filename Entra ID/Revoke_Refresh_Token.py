@@ -7,18 +7,19 @@ https://www.w3schools.com/python/ref_string_replace.asp
 https://www.geeksforgeeks.org/how-to-convert-pythons-isoformat-string-back-into-datetime-object/
 https://stackoverflow.com/questions/35351876/calculate-time-span-in-python
 https://www.geeksforgeeks.org/how-to-send-beautiful-emails-in-python/
+https://learn.microsoft.com/en-us/graph/api/user-revokesigninsessions?view=graph-rest-1.0&tabs=python
 
 '''
 
 ##### Start #####
 
-# Import Modules
+## Import Modules
 import requests
 from msal import PublicClientApplication
 import json
-from datetime import datetime, timezone
-from email.message import EmailMessage
-import smtplib
+#from datetime import datetime, timezone
+#from email.message import EmailMessage
+#import smtplib
 import sys
 
 ## Variables
@@ -29,28 +30,26 @@ clientid = sys.argv[2]
 username = sys.argv[3]
 password = sys.argv[4]
 scope = ['https://graph.microsoft.com/.default']
-endpoint = """https://graph.microsoft.com/v1.0//organization/"""+ str(tenant) + """ """
-endpoint = endpoint.rstrip()
 
 app = PublicClientApplication(client_id=clientid, authority=authority)
 result = app.acquire_token_by_username_password(username, password, scope)
 
 if "access_token" in result:
-    graph_data = requests.get(
-        endpoint,
-        headers={'Authorization': 'Bearer ' + result['access_token']},).json()
+    ## Get Users from the text File
+    users=open('Entra ID/Users.txt','r')
+    for user in users.readlines():
+        print (user)
+        #endpoint = "https://graph.microsoft.com/v1.0//users/"
+        #endpoint += str(user)
+        #endpoint += "/revokeSignInSessions"
+        #endpoint = endpoint.rstrip()
+        #print (endpoint)
+        endpoint = "https://graph.microsoft.com/v1.0//users/chalawh@arvindruchi.onmicrosoft.com/revokeSignInSessions"
+        graph_data = requests.post(
+            endpoint,
+            headers={'Authorization': 'Bearer ' + result['access_token']},).json()
 
-    last_sync_unformatted = 0
-    last_sync_unformatted = graph_data['onPremisesLastSyncDateTime']
-    last_sync_formatted_iso = last_sync_unformatted.replace("Z", ".000000")
-    last_sync_formatted_iso_python = datetime.fromisoformat(last_sync_formatted_iso)
-
-    utc_time_now = datetime.utcnow()
-
-    time_span_seconds = utc_time_now-last_sync_formatted_iso_python
-    time_span_minutes = time_span_seconds.total_seconds()/60
-    print(time_span_minutes)
-
+'''
 # Send Email if the Sync is more than 2 hours
     if int(time_span_minutes) > 120:
         print("AAD Sync Delayed, please check manually")
@@ -76,5 +75,5 @@ if "access_token" in result:
 
         server = smtplib.SMTP('smtpdata.com')
         server.send_message(msg)
-
+'''
 ##### End #####
