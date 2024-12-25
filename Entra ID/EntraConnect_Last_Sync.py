@@ -23,6 +23,16 @@ import sys
 
 ## Variables
 
+'''
+Coipilot Recommendation
+Use f-strings for string formatting.
+
+# Variables
+tenant = sys.argv[1]
+authority = f"https://login.microsoftonline.com/{tenant}"
+
+'''
+
 tenant = sys.argv[1]
 authority = "https://login.microsoftonline.com/"
 authority += str(tenant)
